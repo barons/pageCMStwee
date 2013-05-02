@@ -10,36 +10,11 @@ class Admin_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // die ('ik zit in de indexaction van admin');
+        
     }
 
     public function addNewsAction()
     {
-        die('ik zit in de admin module');
-        $PostNewsForm = new Admin_Form_PostNews();
-        $this->view->form = $PostNewsForm;
-        
-        // zorgen dat nieuws in de database raakt
-        if ($this->getRequest()->isPost()){
-            $postParams = $this->getRequest()->getPost();
-            
-            // controle, als alles correct is
-            if ($this->view->form->isValid($postParams)){
-                
-                // die ('geklikt en ingevuld');
-                unset($postParams['versturen']); // we schrijven de knop niet weg....
-                $nieuwsModel = new Admin_Model_News();
-                $nieuwsModel->addNews($postParams);
-                
-                // $this->_redirect('/nieuws1/overzicht');
-                // vervangen door functies van Zend dus ->
-                // die ('toegevoegd');
-                // $this->_redirect($this->view->url(array('controller' => 'Nieuws1', 'action' => 'overzicht')));
-                
-                $nieuws = $this->getAllNews();
-                $this->view->news = $nieuws;
-            }
-        }
     }
 
     public function removeNewsAction()
@@ -49,34 +24,58 @@ class Admin_IndexController extends Zend_Controller_Action
 
     public function listNewsAction()
     {
-        $nieuws = $this->getAllNews();
         
-        $this->view->news = $nieuws;
     }
 
     public function modNewsAction()
     {
-        $id     = $this->_getParam('id'); 
-        // $_GET['id'];
-        /*$sql    = "select * from nieuws where id = " .$id;
-        $result = $this->db->query($sql);
-        $nieuws = $result->fetch(); // haal alles altijd op
-        */
         
-        $newsModel = new Application_Model_News();
+    }
+    
+    
+    
+
+    public function addProductsAction()
+    {
+        $form = new Admin_Form_Producten();
+        $this->view->form = $form;
+        
+        // zorgen dat nieuws in de database raakt
+        if ($this->getRequest()->isPost()){
+            $postParams = $this->getRequest()->getPost();
+            
+            // controle, als alles correct is
+            if ($this->view->form->isValid($postParams)){
+                unset($postParams['send']); // we schrijven de knop niet weg....
+                $productModel = new Admin_Model_Producten();
+                
+                $productModel->addProducts($postParams);
+                // vervangen door functies van Zend dus ->
+                $this->_redirect($this->view->url(array('controller' => 'Index', 'action' => 'list-products')));
+                die ('redirect gelukt');
+            }
+            
+        }
+    }
+
+    public function delProductsAction()
+    {
+        // action body
+    }
+
+    public function modProductsAction()
+    {
+        $id     = $this->_getParam('id'); 
+        
+        $productModel = new Application_Model_Producten();
         // current, je hebt er maar 1 nodig, al de rest van code weg
         // anders moet je een foreach doen
-        $news     = $newsModel->find($id)->current(); // SELECT * FROM nieuws WHERE id = $id
-        
-        $form        = new Application_Form_News();
+        $product      = $productModel->find($id)->current(); // SELECT * FROM nieuws WHERE id = $id
+        $form        = new Application_Form_Producten();
         // populate, juiste veldjes opvullen met data die je wilt
-        $form->populate($news>toArray()); // omzetten in array om het formulier op te vullen
+        $form->populate($product->toArray()); // omzetten in array om het formulier op te vullen
         
         // populate form
-        
-        /*$form->getElement('titel')->setValue($nieuws['titel']);
-        $form->getElement('omschrijving')->setValue($nieuws['omschrijving']);*/
-        
         $this->view->form = $form;
         
         // zorgen dat nieuws in de database raakt
@@ -86,14 +85,25 @@ class Admin_IndexController extends Zend_Controller_Action
             // controle, als alles correct is
             if ($this->view->form->isValid($postParams)){
                 
-                unset($postParams['versturen']);
+                unset($postParams['send']);
                 
-                $newsModel->modNews($postParams, $id);
-                $this->_redirect('/news/overzicht');
+                $productModel->modProducts($postParams, $id);
+                $this->_redirect('/producten/overzicht');
                 
             }
             
         }
+    }
+
+    public function listProductsAction()
+    {
+        
+        $sql                    = "select * from producten";
+        
+        $result                 = $this->db->query($sql);
+        die('in de list functie');
+        $producten              = $result->fetchAll(); // haal alles altijd op
+        $this->view->producten  = $producten;
     }
 
 

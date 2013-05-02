@@ -69,16 +69,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     'controller' => 'index',
                     'action'     => 'index'
                 )));
+        
         $router->addRoute('noaccess',
                 new Zend_Controller_Router_Route('noaccess',array(
                     'controller' => 'noaccess',
                     'action'     => 'index'
-                )));
-        $router->addRoute('addnews',
-                new Zend_Controller_Router_Route(':lang/admin/addnews',array(
-                    'module'        => 'admin',
-                    'controller'    => 'index',
-                    'action'        => 'addNews'
                 )));
         
     }
